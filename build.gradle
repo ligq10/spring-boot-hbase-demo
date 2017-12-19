@@ -1,0 +1,79 @@
+apply plugin: 'java'
+apply plugin: 'maven'
+apply plugin: 'eclipse'
+apply plugin: 'idea'
+apply plugin: 'org.springframework.boot'
+
+group = 'com.spring4all'
+version = '1.0.0.RELEASE'
+
+sourceCompatibility = 1.7
+targetCompatibility = 1.7
+compileJava.options.encoding = 'UTF-8'
+buildDir = 'target'
+
+ext {
+  springBootVersion = '1.5.6.RELEASE'
+  springVersion = '4.3.10.RELEASE'
+  hbaseVersion = '1.0.0-cdh5.4.4'
+  slf4jVersion = '1.7.25'
+}
+
+repositories {
+        maven { url "https://repo.spring.io/libs-release" }
+        maven {
+            url 'http://repo.spring.io/milestone'
+        }
+        maven {
+            url 'http://repo.spring.io/libs-milestone'
+        }
+        mavenLocal()
+        mavenCentral()
+        jcenter()
+}
+
+task sourcesJar(type: Jar, dependsOn: classes) {
+  classifier = 'sources'
+  from sourceSets.main.allSource
+}
+
+artifacts {
+  archives sourcesJar
+}
+
+
+dependencies {
+  compile 'org.springframework.boot:spring-boot-starter-web'
+  compile "org.slf4j:slf4j-api:$slf4jVersion"
+  compile "org.springframework.boot:spring-boot-autoconfigure:$springBootVersion"
+  compile "org.springframework:spring-tx:$springVersion"
+  compile ("org.apache.hbase:hbase-client:$hbaseVersion") {
+    exclude group: 'javax.servlet', module: 'servlet-api'
+  }
+
+  testCompile "junit:junit:4.12"
+}
+
+buildscript {
+  ext {
+    springBootVersion = '1.5.6.RELEASE'
+  }
+
+  repositories {
+        maven { url "https://repo.spring.io/libs-release" }
+        maven {
+            url 'http://repo.spring.io/milestone'
+        }
+        maven {
+            url 'http://repo.spring.io/libs-milestone'
+        }
+        mavenLocal()
+        mavenCentral()
+        jcenter()
+  }
+
+  dependencies {
+    classpath("org.springframework.boot:spring-boot-gradle-plugin:${springBootVersion}")
+    classpath("io.spring.gradle:dependency-management-plugin:1.0.3.RELEASE")
+  }
+}
